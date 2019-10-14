@@ -1,4 +1,3 @@
-<%@page import="org.dimitar.eventManager.repositories.UnitOfWork"%>
 <%@page import="java.util.Set"%>
 <%@page import="org.dimitar.eventManager.models.User"%>
 <%@page import="org.dimitar.eventManager.models.Event"%>
@@ -17,7 +16,7 @@
 <body>
 
 	<%
-		UsersRepository usersRepository = UnitOfWork.getUnitOfWork().getUsersRepository();
+		UsersRepository usersRepository = new UsersRepository();
 		User currentUserDb = usersRepository.findByField("id",	(Integer)session.getAttribute("currentUserId"));
 		Set<Event> myEvents = currentUserDb.getEvents();
 		request.setAttribute("myEvents", myEvents);

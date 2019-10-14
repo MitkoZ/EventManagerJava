@@ -1,4 +1,3 @@
-<%@page import="org.dimitar.eventManager.repositories.UnitOfWork"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="java.time.LocalDateTime"%>
 <%@page import="org.dimitar.eventManager.models.Event"%>
@@ -31,7 +30,7 @@
 	
 	<%
 	if(request.getParameterMap().size() == 3){
-		 UsersRepository usersRepository = UnitOfWork.getUnitOfWork().getUsersRepository();
+		 UsersRepository usersRepository = new UsersRepository();
 		 User userDb = usersRepository.findByField("id", (Integer)session.getAttribute("currentUserId"));
 		 
 		 String eventName = request.getParameter("eventName");
@@ -40,9 +39,8 @@
 		 
 		 Event eventDb = new Event(eventName, startDateTime, endDateTime);
 		 userDb.getEvents().add(eventDb);
-		 usersRepository.Save(userDb);
 		 
-		 if(UnitOfWork.getUnitOfWork().commit() > 0){
+		 if(usersRepository.Save(userDb) > 0){
 			 out.println("<h1>Event saved successfully!</h1>");
 			 return;
 		 }

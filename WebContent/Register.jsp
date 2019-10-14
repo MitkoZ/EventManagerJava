@@ -1,4 +1,3 @@
-<%@page import="org.dimitar.eventManager.repositories.UnitOfWork"%>
 <%@page import="org.dimitar.eventManager.repositories.UsersRepository" %>
 <%@page import="org.dimitar.eventManager.models.User" %>
 <%@page import = "java.io.*,java.util.*" %>
@@ -31,14 +30,14 @@
 	<%
 		if(request.getParameterMap().size()>0){
 			 User userDb = new User(request.getParameter("username"), request.getParameter("password"));
-			 UsersRepository usersRepository = UnitOfWork.getUnitOfWork().getUsersRepository();
+			 UsersRepository usersRepository = new UsersRepository();
 			 
 			   if(usersRepository.findByField("username", request.getParameter("username"))!=null){
 				   out.println("<h1>A user with this username already exists</h1>");
 				   return;
 			   }
-			   usersRepository.Save(userDb);
-			   if(UnitOfWork.getUnitOfWork().commit() > 0){
+			   
+			   if(usersRepository.Save(userDb) > 0){
 				    out.println("<h1>User Registered Successfully!</h1>");
 			   }
 			   else{

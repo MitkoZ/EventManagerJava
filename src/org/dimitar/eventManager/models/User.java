@@ -71,5 +71,4 @@ public class User {
 	public void setEvents(Set<Event> events) {
 		this.Events = events;
 	}
-
 }

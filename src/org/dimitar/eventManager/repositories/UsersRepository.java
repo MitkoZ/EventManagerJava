@@ -2,18 +2,29 @@ package org.dimitar.eventManager.repositories;
 
 import org.dimitar.eventManager.models.User;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.Transaction;
 
 public class UsersRepository extends BaseRepository<User> {
-
-	public UsersRepository(Session hibernateSession) {
-		super(User.class, hibernateSession);
+	public UsersRepository() {
+		super(User.class);
 	}
-
-	public void Save(User user) {
-		this.hibernateSession.save(user);
+	
+	public Integer Save(User user) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = session.beginTransaction();
+		try {
+			session.save(user);
+			transaction.commit();
+			return 1;
+		}
+		catch(Exception e) {
+			System.out.println("An exception occured :(");
+			System.out.println(e);
+			return -1;
+		}
+		finally {
+			session.close();
+		}
+		
 	}
 }

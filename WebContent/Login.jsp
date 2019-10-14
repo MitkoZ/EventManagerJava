@@ -1,4 +1,3 @@
-<%@page import="org.dimitar.eventManager.repositories.UnitOfWork"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@page import="org.dimitar.eventManager.repositories.UsersRepository" %>
@@ -29,7 +28,7 @@
 	</form>
 	<%
 	if(request.getParameterMap().size() == 2){ // username and password are entered
-	       UsersRepository usersRepository = UnitOfWork.getUnitOfWork().getUsersRepository();
+	       UsersRepository usersRepository = new UsersRepository();
 	       List<User> usersDb = usersRepository.GetAll();
 	       
 	       String username = request.getParameter("username");
