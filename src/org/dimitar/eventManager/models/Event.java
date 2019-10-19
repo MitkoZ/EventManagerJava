@@ -78,4 +78,9 @@ public class Event {
 	public void setEndDateTime(LocalDateTime endDateTime) {
 		this.endDateTime = endDateTime;
 	}
+	
+	public void setUser(User userDb) {
+		this.user = userDb;
+	}
+	
 }

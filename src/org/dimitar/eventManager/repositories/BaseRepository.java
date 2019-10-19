@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -11,17 +12,20 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public abstract class BaseRepository<T> {
 
+	private EntityManager entityManager;
+
+	protected EntityManager getEntityManager() {
+		if (entityManager == null || !entityManager.isOpen()) {
+			this.entityManager = EntityManagerUtil.getEntityManager();
+		}
+		return entityManager;
+	}
+
 	private final Class<T> modelType;
-	
+
 	public BaseRepository(Class<T> modelType) {
 		this.modelType = modelType;
 	}
@@ -31,24 +35,27 @@ public abstract class BaseRepository<T> {
 	}
 
 	public List<T> GetAll() {
-		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
-			List<T> items = session.createCriteria(this.getModelType()).list();
-			return items;
+			this.getEntityManager().getTransaction().begin();
+			CriteriaBuilder builder = this.getEntityManager().getCriteriaBuilder();
+			CriteriaQuery<T> query = builder.createQuery(this.getModelType());
+			Root<T> variableRoot = query.from(this.getModelType());
+			query.select(variableRoot);
+
+			return getEntityManager().createQuery(query).getResultList();
 		} catch (Exception e) {
 			System.out.println("An exception occured :(");
 			System.out.println(e);
 			return new ArrayList<T>();
-		}
-		finally {
-			session.close();
+		} finally {
+			this.getEntityManager().close();
 		}
 	}
 
 	public T findByField(String fieldName, String yourFieldValue) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
-			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			this.getEntityManager().getTransaction().begin();
+			CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
 			CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.getModelType());
 			Root<T> root = criteriaQuery.from(this.getModelType());
 			criteriaQuery.select(root);
@@ -56,7 +63,7 @@ public abstract class BaseRepository<T> {
 			ParameterExpression<String> params = criteriaBuilder.parameter(String.class);
 			criteriaQuery.where(criteriaBuilder.equal(root.get(fieldName), params));
 
-			TypedQuery<T> query = session.createQuery(criteriaQuery);
+			TypedQuery<T> query = this.getEntityManager().createQuery(criteriaQuery);
 			query.setParameter(params, yourFieldValue);
 
 			List<T> queryResult = query.getResultList();
@@ -73,16 +80,15 @@ public abstract class BaseRepository<T> {
 			System.out.println("An exception occured :(");
 			System.out.println(e);
 			return null;
-		}
-		finally {
-			session.close();
+		} finally {
+			this.getEntityManager().close();
 		}
 	}
 
 	public T findByField(String fieldName, Integer yourFieldValue) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
-			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			this.getEntityManager().getTransaction().begin();
+			CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
 			CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.getModelType());
 			Root<T> root = criteriaQuery.from(this.getModelType());
 			criteriaQuery.select(root);
@@ -90,7 +96,7 @@ public abstract class BaseRepository<T> {
 			ParameterExpression<Integer> params = criteriaBuilder.parameter(Integer.class);
 			criteriaQuery.where(criteriaBuilder.equal(root.get(fieldName), params));
 
-			TypedQuery<T> query = session.createQuery(criteriaQuery);
+			TypedQuery<T> query = this.getEntityManager().createQuery(criteriaQuery);
 			query.setParameter(params, yourFieldValue);
 
 			List<T> queryResult = query.getResultList();
@@ -105,11 +111,10 @@ public abstract class BaseRepository<T> {
 		} catch (Exception e) {
 			System.out.println("An exception occured :(");
 			System.out.println(e);
-			
+
 			return null;
-		}
-		finally {
-			session.close();
+		} finally {
+			this.getEntityManager().close();
 		}
 	}
 }
