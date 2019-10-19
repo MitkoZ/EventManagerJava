@@ -8,13 +8,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.dimitar.eventManager.models.interfaces.IEntity;
 import org.hibernate.annotations.GenericGenerator;
 import java.util.*;
 import javax.persistence.CascadeType;
 
 @Entity
 @Table(name = "Users")
-public class User {
+public class User implements IEntity {
 
 	@Id
 	@GeneratedValue(generator = "increment")
@@ -29,7 +30,7 @@ public class User {
 	private String password;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private Set<Event> Events = new HashSet();;
+	private List<Event> Events = new ArrayList<Event>();
 
 	public User() {
 
@@ -64,11 +65,11 @@ public class User {
 		this.password = password;
 	}
 
-	public Set<Event> getEvents() {	
+	public List<Event> getEvents() {	
 		return this.Events;
 	}
 
-	public void setEvents(Set<Event> events) {
+	public void setEvents(List<Event> events) {
 		this.Events = events;
 	}
 }

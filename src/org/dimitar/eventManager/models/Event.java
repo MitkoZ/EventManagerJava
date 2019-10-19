@@ -10,12 +10,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.dimitar.eventManager.models.interfaces.IEntity;
 import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Events")
-public class Event {
+public class Event implements IEntity{
 	
 	@Id
 	@GeneratedValue(generator="increment")

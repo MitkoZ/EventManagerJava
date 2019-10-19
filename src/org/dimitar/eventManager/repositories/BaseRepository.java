@@ -12,8 +12,9 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.dimitar.eventManager.models.interfaces.IEntity;
 
-public abstract class BaseRepository<T> {
+public abstract class BaseRepository<T extends IEntity> {
 
 	private EntityManager entityManager;
 
@@ -116,5 +117,38 @@ public abstract class BaseRepository<T> {
 		} finally {
 			this.getEntityManager().close();
 		}
+	}
+
+	public Integer Save(T entity) {
+		try {
+			this.getEntityManager().getTransaction().begin();
+
+			if (entity.getId() == null) {
+				this.getEntityManager().persist(entity); // update
+			} else {
+				this.getEntityManager().merge(entity); // save
+			}
+
+			this.getEntityManager().getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println("An exception occured: " + e);
+			return -1;
+		} finally {
+			this.getEntityManager().close();
+		}
+		return 1;
+	}
+
+	public Integer Delete(T entity) {
+		try {
+			this.getEntityManager().getTransaction().begin();
+			this.getEntityManager()
+					.remove(this.getEntityManager().contains(entity) ? entity : this.getEntityManager().merge(entity));
+			this.getEntityManager().getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println("An exception occured: " + e);
+			return -1;
+		}
+		return 1;
 	}
 }
