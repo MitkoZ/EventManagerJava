@@ -4,6 +4,8 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+	
+<jsp:include page="_FrontEndDependencies.jsp"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,16 +17,20 @@
 	<form action="Register.jsp" method="POST">
 		
 		<label for="username">Username</label>
-		<input type="text" name="username" id="username" required /> 
+		<div class="input-group mb-3">
+			<input type="text" name="username" id="username" class="form-control" required /> 
+		</div>
 		
 		<br/>
 		
 		<label for="password">Password</label>
-		<input type="password" name="password" id="password" required />
+		<div class="input-group mb-3">
+			<input type="password" name="password" id="password" class="form-control" required />
+		</div>
 		
 		<br/>
 		
-		<input type="submit" value="Register"/>
+		<input type="submit" value="Register" class="btn btn-success"/>
 	</form>
 	
 	<%
@@ -32,16 +38,18 @@
 			 User userDb = new User(request.getParameter("username"), request.getParameter("password"));
 			 UsersRepository usersRepository = new UsersRepository();
 			 
-			   if(usersRepository.findByField("username", request.getParameter("username"))!=null){
+			   if(usersRepository.findByField("username", request.getParameter("username")) != null){
 				   out.println("<h1>A user with this username already exists</h1>");
 				   return;
 			   }
 			   
 			   if(usersRepository.Save(userDb) > 0){
-				    out.println("<h1>User Registered Successfully!</h1>");
+				    request.getSession().setAttribute("successMessage", "User Registered Successfully!");
+				    response.sendRedirect("Home.jsp");
 			   }
 			   else{
-				   out.println("<h1>Ooops something went wrong :(</h1>");
+				   request.getSession().setAttribute("errorMessage", "Ooops something went wrong :(");
+				   response.sendRedirect("Home.jsp");
 			   }
 		}
 		%>

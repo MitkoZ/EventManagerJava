@@ -27,6 +27,9 @@ public class Event implements IEntity{
 	@Column(name = "Name", nullable = false)
     private String name;
     
+	@Column(name = "Location", nullable = false)
+	private String location;
+	
 	@Column(name = "StartDateTime", nullable = false)
     private LocalDateTime startDateTime;
 	
@@ -41,9 +44,10 @@ public class Event implements IEntity{
 		// this form used by Hibernate
 	}
 
-	public Event(String name, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+	public Event(String name, String location, LocalDateTime startDateTime, LocalDateTime endDateTime) {
 		// for application use, to create new events
 		this.name = name;
+		this.location = location;
 		this.startDateTime = startDateTime;
 		this.endDateTime = endDateTime;
 	}
@@ -64,6 +68,14 @@ public class Event implements IEntity{
 		this.name = name;
     }
 
+	public String getLocation() {
+		return this.location;
+	}
+	
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	
 	public LocalDateTime getStartDateTime() {
 		return startDateTime;
 	}
@@ -83,5 +95,4 @@ public class Event implements IEntity{
 	public void setUser(User userDb) {
 		this.user = userDb;
 	}
-	
 }

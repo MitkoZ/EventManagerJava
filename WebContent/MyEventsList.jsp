@@ -15,6 +15,7 @@
 <title>All my events</title>
 </head>
 <body>
+	<jsp:include page="_FrontEndDependencies.jsp"/>
 	<jsp:include page="_Messages.jsp" />
 	<%
 		UsersRepository usersRepository = new UsersRepository();
@@ -25,24 +26,26 @@
 
 	<h1>My Events</h1>
 	<a href="UpsertEvent.jsp">Create</a>
-	<table border="1">
+	<table border="1" class="table table-hover">
 		<thead>
-			<th>Id</th>
-			<th>Name</th>
-			<th>StartDateTime</th>
-			<th>EndDateTime</th>
+			<th scope="col">Id</th>
+			<th scope="col">Name</th>
+			<th scope="col">Location</th>
+			<th scope="col">StartDateTime</th>
+			<th scope="col">EndDateTime</th>
 			<th></th>
 			<th></th>
 		</thead>
 		<tbody>
 			<c:forEach items="${myEvents}" var="myEvent">
 				<tr>
-					<td>${myEvent.getId()}</td>
+					<th scope="row">${myEvent.getId()}</th>
 					<td>${myEvent.getName()}</td>
+					<td>${myEvent.getLocation()}</td>
 					<td>${myEvent.getStartDateTime()}</td>
 					<td>${myEvent.getEndDateTime()}</td>
-					<td><a href="UpsertEvent.jsp?id=${myEvent.getId()}">Edit</a></td>
-					<td><a href="DeleteEvent.jsp?id=${myEvent.getId()}">Delete</a></td>
+					<td><a href="UpsertEvent.jsp?id=${myEvent.getId()}" class="btn btn-warning">Edit</a></td>
+					<td><a href="DeleteEvent.jsp?id=${myEvent.getId()}" class="btn btn-danger">Delete</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
