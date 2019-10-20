@@ -1,3 +1,5 @@
+<%@page import="java.util.function.Supplier"%>
+<%@page import="java.util.stream.Stream"%>
 <%@page import="java.io.IOException"%>
 <%@page import="java.text.MessageFormat"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
@@ -20,7 +22,10 @@
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		request.setAttribute("dateTimeFormatter", dateTimeFormatter);
 	%>
-
+</head>
+<body>
+	<jsp:include page="_Navbar.jsp" />
+	
 	<%
 		Event currentEvent = null;
 		String eventIdString = request.getParameter("id");
@@ -42,8 +47,6 @@
 		out.println(MessageFormat.format("<h1>{0}</h1>", pageHeading));
 	%>
 	
-</head>
-<body>
 	<form action="UpsertEvent.jsp" method="POST">
 		<input type="hidden" name="id" value="${currentEvent.getId()}"/>  
 		
@@ -160,7 +163,15 @@
 			UsersRepository usersRepository = new UsersRepository();
 			
 			User currentUserDb = usersRepository.findByField("id", (Integer)request.getSession().getAttribute("currentUserId"));
-			if(currentUserDb.getEvents().stream().filter(x->x.getName().equals(eventName)).count() >= 1){ // there is already an event with the same name, to for the current user
+			
+			Supplier<Stream<Event>> currentEventDbStreamSupplier = () -> currentUserDb.getEvents().stream().filter(x->x.getName().equals(eventName));
+			
+			if(isEdit(eventIdString) && currentEventDbStreamSupplier.get().count() >= 1 && currentEventDbStreamSupplier.get().findFirst().get().getId() != Integer.valueOf(String.valueOf(eventIdString))){ // it's edit and he is trying to edit an event with the same name of a different event
+				request.getSession().setAttribute("errorMessage", "An event with this name already exists!");
+				response.sendRedirect("UpsertEvent.jsp");
+				return false;
+			}
+			else if(!isEdit(eventIdString) && currentEventDbStreamSupplier.get().count() >= 1){ // it's create and he is trying to create an event with the same name
 				request.getSession().setAttribute("errorMessage", "An event with this name already exists!");
 				response.sendRedirect("UpsertEvent.jsp");
 				return false;

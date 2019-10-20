@@ -16,6 +16,7 @@
 </head>
 <body>
 	<jsp:include page="_FrontEndDependencies.jsp"/>
+	<jsp:include page="_Navbar.jsp" />
 	<jsp:include page="_Messages.jsp" />
 	<%
 		UsersRepository usersRepository = new UsersRepository();

@@ -13,6 +13,8 @@
 <title>Register</title>
 </head> 
 <body>
+	<jsp:include page="_Navbar.jsp" />
+	
 	<h1>Register</h1>
 	<form action="Register.jsp" method="POST">
 		

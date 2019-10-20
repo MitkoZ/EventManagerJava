@@ -4,11 +4,12 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Home page</title>
+<title>Logout</title>
 </head>
-<jsp:include page="_FrontEndDependencies.jsp" />
 <body>
-	<jsp:include page="_Navbar.jsp" />
-	<jsp:include page="_Messages.jsp" />
+	<%
+		session.invalidate();
+		response.sendRedirect("Home.jsp");
+	%>
 </body>
 </html>
