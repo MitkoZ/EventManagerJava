@@ -14,6 +14,7 @@
 </head> 
 <body>
 	<jsp:include page="_Navbar.jsp" />
+	<jsp:include page="_Messages.jsp"/>
 	
 	<h1>Register</h1>
 	<form action="Register.jsp" method="POST">
@@ -41,7 +42,8 @@
 			 UsersRepository usersRepository = new UsersRepository();
 			 
 			   if(usersRepository.findByField("username", request.getParameter("username")) != null){
-				   out.println("<h1>A user with this username already exists</h1>");
+				   request.getSession().setAttribute("errorMessage", "A user with this username already exists");
+				   response.sendRedirect("Register.jsp");
 				   return;
 			   }
 			   

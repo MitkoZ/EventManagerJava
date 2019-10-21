@@ -15,7 +15,7 @@
 <title>All my events</title>
 </head>
 <body>
-	<jsp:include page="_FrontEndDependencies.jsp"/>
+	<jsp:include page="_FrontEndDependencies.jsp" />
 	<jsp:include page="_Navbar.jsp" />
 	<jsp:include page="_Messages.jsp" />
 	<%
@@ -45,8 +45,43 @@
 					<td>${myEvent.getLocation()}</td>
 					<td>${myEvent.getStartDateTime()}</td>
 					<td>${myEvent.getEndDateTime()}</td>
-					<td><a href="UpsertEvent.jsp?id=${myEvent.getId()}" class="btn btn-warning">Edit</a></td>
-					<td><a href="DeleteEvent.jsp?id=${myEvent.getId()}" class="btn btn-danger">Delete</a></td>
+					<td><a href="UpsertEvent.jsp?id=${myEvent.getId()}"
+						class="btn btn-warning">Edit</a></td>
+					<td>
+						<!-- Button trigger the delete modal -->
+						<button type="button" class="btn btn-danger" data-toggle="modal"
+							data-target="#deleteEventModal${myEvent.getId()}">Delete</button> 
+						
+						<!-- Modal -->
+						<div class="modal fade" id="deleteEventModal${myEvent.getId()}" tabindex="-1"
+							role="dialog" aria-labelledby="deleteEventModalLabel${myEvent.getId()}"
+							aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="deleteEventModalLabel${myEvent.getId()}">Delete
+											Event</h5>
+										<button type="button" class="close" data-dismiss="modal"
+											aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+
+									<div class="modal-body">Are you sure that you want to
+										delete the event with Id ${myEvent.getId()}?</div>
+
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary"
+											data-dismiss="modal">Close</button>
+
+										<a class="btn btn-danger"
+											href="DeleteEvent.jsp?id=${myEvent.getId()}">Delete</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</td>
+
 				</tr>
 			</c:forEach>
 		</tbody>

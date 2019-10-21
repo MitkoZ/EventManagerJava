@@ -13,6 +13,7 @@
 </head>
 <body>
 	<jsp:include page="_Navbar.jsp" />
+	<jsp:include page="_Messages.jsp"/>
 	
 	<h1>Login</h1>
 		<form action="Login.jsp" method="POST">
@@ -50,7 +51,8 @@
 			  return;
 		   }
 		   
-		   out.println("<h1>Wrong username or password!</h1>");
+		   request.getSession().setAttribute("errorMessage", "Wrong username or password!");
+		   response.sendRedirect("Login.jsp");
 	}
 	%>
 </body>

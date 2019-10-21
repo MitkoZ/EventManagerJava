@@ -10,9 +10,6 @@
 <%@page import="org.dimitar.eventManager.repositories.UsersRepository"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    
-<jsp:include page="_FrontEndDependencies.jsp"/>
-<jsp:include page="_Messages.jsp"/>
 
 <!DOCTYPE html>
 <html>
@@ -25,7 +22,8 @@
 </head>
 <body>
 	<jsp:include page="_Navbar.jsp" />
-	
+	<jsp:include page="_FrontEndDependencies.jsp"/>
+	<jsp:include page="_Messages.jsp"/>
 	<%
 		Event currentEvent = null;
 		String eventIdString = request.getParameter("id");
@@ -121,6 +119,9 @@
 			if(isEdit(eventIdString)){
 				String eventId = request.getParameter("id");
 				response.sendRedirect("UpsertEvent.jsp?id=" + eventId);		
+			}
+			else if (!isEdit(eventIdString)){
+				response.sendRedirect("UpsertEvent.jsp");
 			}
 		}
 	
