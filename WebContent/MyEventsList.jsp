@@ -26,7 +26,7 @@
 	%>
 
 	<h1>My Events</h1>
-	<a href="UpsertEvent.jsp">Create</a>
+	<a href="UpsertEvent.jsp" class="btn btn-primary">Create</a>
 	<table border="1" class="table table-hover">
 		<thead>
 			<th scope="col">Id</th>
