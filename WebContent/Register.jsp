@@ -36,15 +36,58 @@
 		<input type="submit" value="Register" class="btn btn-success"/>
 	</form>
 	
+	<%!
+	
+		public boolean isContainAtLeastOneNumber(String string) {
+		    String numbersRegex = ".*[0-9].*";
+		    return string.matches(numbersRegex);
+		}
+		
+		public boolean isContainAtLeastOneLetter(String string){
+			String alphabetRegex = ".*[a-zA-Z].*";
+			return string.matches(alphabetRegex);
+		}
+	
+		public Boolean isValid(HttpServletRequest request, HttpServletResponse response) throws IOException{
+			 UsersRepository usersRepository = new UsersRepository();
+			 
+			 if(usersRepository.findByField("username", request.getParameter("username")) != null){
+				 request.getSession().setAttribute("errorMessage", "A user with this username already exists");
+				 response.sendRedirect("Register.jsp");
+				 return false;
+			 }
+			 
+			 String username = request.getParameter("username");
+			 if(username == null || username.length() < 6){
+				 request.getSession().setAttribute("errorMessage", "Username must be at least 6 symbols!");
+				 response.sendRedirect("Register.jsp");
+				 return false;
+			 }
+			 
+			 String password = request.getParameter("password");
+			 if(password == null || password.length() < 8){
+				 request.getSession().setAttribute("errorMessage", "Password must be at least 8 symbols!");
+				 response.sendRedirect("Register.jsp");
+				 return false;
+			 }
+			 
+			 if(!isContainAtLeastOneNumber(password) || !isContainAtLeastOneLetter(password)){
+				 request.getSession().setAttribute("errorMessage", "Password must contain at least one number and one letter!");
+				 response.sendRedirect("Register.jsp");
+				 return false;
+			 }
+			 
+			 return true;
+		}
+	%>
+	
 	<%
-		if(request.getParameterMap().size()>0){
+		if(request.getParameterMap().size() > 0){
 			 User userDb = new User(request.getParameter("username"), request.getParameter("password"));
 			 UsersRepository usersRepository = new UsersRepository();
 			 
-			   if(usersRepository.findByField("username", request.getParameter("username")) != null){
-				   request.getSession().setAttribute("errorMessage", "A user with this username already exists");
-				   response.sendRedirect("Register.jsp");
-				   return;
+			   if(!isValid(request, response)){
+					return;
 			   }
 			   
 			   if(usersRepository.Save(userDb) > 0){
