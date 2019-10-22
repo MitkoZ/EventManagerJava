@@ -51,15 +51,15 @@
 		public Boolean isValid(HttpServletRequest request, HttpServletResponse response) throws IOException{
 			 UsersRepository usersRepository = new UsersRepository();
 			 
-			 if(usersRepository.findByField("username", request.getParameter("username")) != null){
-				 request.getSession().setAttribute("errorMessage", "A user with this username already exists");
+			 String username = request.getParameter("username");
+			 if(username == null || username.length() < 6){
+				 request.getSession().setAttribute("errorMessage", "Username must be at least 6 symbols!");
 				 response.sendRedirect("Register.jsp");
 				 return false;
 			 }
 			 
-			 String username = request.getParameter("username");
-			 if(username == null || username.length() < 6){
-				 request.getSession().setAttribute("errorMessage", "Username must be at least 6 symbols!");
+			 if(usersRepository.findByField("username", request.getParameter("username")) != null){
+				 request.getSession().setAttribute("errorMessage", "A user with this username already exists");
 				 response.sendRedirect("Register.jsp");
 				 return false;
 			 }
